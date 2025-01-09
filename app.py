@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, jsonify
 import os
 from werkzeug.utils import secure_filename
-from PIL import Image
+
 import pytesseract
 import cv2
 
