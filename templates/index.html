@@ -4,20 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OCR Number Detection</title>
+    <script src="/static/scripts.js" defer></script>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>Upload an Image to Detect Numbers</h1>
-    <form action="/" method="POST" enctype="multipart/form-data">
-        <input type="file" name="image" accept="image/*" required>
-        <button type="submit">Upload</button>
-    </form>
-
-    {% if numbers is not none %}
-    <h2>Detected Numbers: {{ numbers }}</h2>
-    <h3>Original Image:</h3>
-    <img src="{{ url_for('static', filename='uploads/' + original_image) }}" alt="Original Image" width="300">
-    <h3>Processed Image:</h3>
-    <img src="{{ url_for('static', filename='uploads/' + processed_image) }}" alt="Processed Image" width="300">
-    {% endif %}
+    <h1>Number Detection</h1>
+    <video id="camera" autoplay></video>
+    <canvas id="snapshot" hidden></canvas>
+    <button id="captureButton">Capture Photo</button>
+    <p id="result"></p>
 </body>
 </html>
