@@ -9,21 +9,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // เริ่มต้นกล้อง
     async function startCamera() {
         try {
-            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            // ตรวจสอบการรองรับอุปกรณ์ iPhone
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: 'environment', // ใช้กล้องหลัง
+                    width: { ideal: 1280 },   // ปรับขนาดวิดีโอ
+                    height: { ideal: 720 }
+                }
+            });
             camera.srcObject = stream;
             camera.hidden = false;
         } catch (error) {
             console.error('Error accessing camera:', error);
             result.textContent = 'Cannot access the camera.';
         }
-    }
-
-    // หยุดกล้อง
-    function stopCamera() {
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop());
-        }
-        camera.hidden = true;
     }
 
     // ถ่ายภาพจากกล้อง
@@ -58,5 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
     startCamera();
 
     // หยุดกล้องเมื่อออกจากหน้าเว็บ
-    window.addEventListener('beforeunload', stopCamera);
+    window.addEventListener('beforeunload', () => {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    });
 });
