@@ -7,7 +7,8 @@ import cv2
 
 # กำหนด path ของ Tesseract OCR
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
-
+if not os.path.exists('uploads'):
+    os.makedirs('uploads')
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
@@ -36,7 +37,11 @@ def upload_image():
     file = request.files['image']
     if file.filename == '':
         return jsonify({"error": "No selected file"}), 400
-    
+
+    # ตรวจสอบและสร้างโฟลเดอร์ 'uploads' ถ้ายังไม่มี
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.makedirs(app.config['UPLOAD_FOLDER'])
+
     filename = secure_filename(file.filename)
     file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     file.save(file_path)
@@ -45,6 +50,7 @@ def upload_image():
     os.remove(file_path)  # Optional: Remove file after processing
 
     return jsonify({"numbers": detected_numbers or "No numbers detected"})
+
 
 if __name__ == '__main__':
     if not os.path.exists('uploads'):
