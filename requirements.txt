@@ -1,3 +1,4 @@
 flask
 gunicorn
 pytesseract
+cv2
