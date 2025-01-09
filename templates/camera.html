@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera App</title>
+</head>
+<body>
+    <h1>Take a Picture to Detect Numbers</h1>
+    <video id="video" autoplay></video>
+    <canvas id="canvas" style="display:none;"></canvas>
+    <button id="capture">Capture</button>
+    <p id="result"></p>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const result = document.getElementById('result');
+
+        // เปิดกล้อง
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Error accessing camera:", err);
+            });
+
+        document.getElementById('capture').addEventListener('click', () => {
+            // ถ่ายภาพ
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // แปลงภาพเป็น Base64
+            const imageData = canvas.toDataURL('image/png');
+
+            // ส่งภาพไปที่ Flask Server
+            fetch('/process_image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ image: imageData }),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.numbers) {
+                        result.textContent = `Detected Numbers: ${data.numbers}`;
+                    } else {
+                        result.textContent = 'No numbers detected.';
+                    }
+                })
+                .catch(err => {
+                    console.error("Error processing image:", err);
+                });
+        });
+    </script>
+</body>
+</html>
