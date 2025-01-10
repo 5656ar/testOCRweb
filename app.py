@@ -6,7 +6,7 @@ import pytesseract
 import cv2
 
 # กำหนด path ของ Tesseract OCR
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = '/usr/bin/tesseract'
 if not os.path.exists('uploads'):
     os.makedirs('uploads')
 app = Flask(__name__)

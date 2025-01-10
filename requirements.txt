@@ -2,4 +2,4 @@ flask
 gunicorn
 pytesseract
 opencv-python
-tesseract-ocr
+pytesseract
